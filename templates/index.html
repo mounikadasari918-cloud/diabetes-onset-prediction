@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diabetes Onset Prediction</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 24px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #24436b;
+    background:
+        radial-gradient(circle at top left, #c9f2ff, transparent 35%),
+        radial-gradient(circle at top right, #eadfff, transparent 35%),
+        linear-gradient(135deg, #eaf8ff, #f3fff9, #f6f0ff);
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 10px 28px;
+}
+
+h1 {
+    margin: 0 0 10px;
+    color: #1263a9;
+    font-size: clamp(28px, 4vw, 46px);
+}
+
+.subtitle {
+    color: #597397;
+    line-height: 1.6;
+}
+
+.hero-note {
+    padding: 18px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #dffaf0, #e8faff);
+    color: #087f78;
+    font-weight: bold;
+    line-height: 1.6;
+}
+
+.panel {
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(46, 96, 148, 0.13);
+}
+
+.section-title {
+    display: inline-block;
+    margin: 0 0 20px;
+    padding: 13px 20px;
+    border-radius: 14px;
+    background: linear-gradient(110deg, #09aeb5, #1689e9);
+    color: white;
+    font-size: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.field-card {
+    padding: 17px;
+    border: 1px solid #d9e8fb;
+    border-radius: 17px;
+    background: linear-gradient(145deg, #fbfdff, #f5faff);
+    transition: 0.2s;
+}
+
+.field-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 20px rgba(47, 118, 169, 0.12);
+}
+
+.field-card:nth-child(4n+1) {
+    --accent: #bd4fd6;
+    --tint: #fbeafa;
+}
+
+.field-card:nth-child(4n+2) {
+    --accent: #159e82;
+    --tint: #e3fbf2;
+}
+
+.field-card:nth-child(4n+3) {
+    --accent: #7953dc;
+    --tint: #f0eaff;
+}
+
+.field-card:nth-child(4n+4) {
+    --accent: #1199b9;
+    --tint: #e3f8ff;
+}
+
+label {
+    display: block;
+    margin-bottom: 11px;
+    color: #123c80;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.symbol {
+    display: inline-grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    border-radius: 10px;
+    color: white;
+    background: var(--accent);
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbdcf2;
+    border-radius: 10px;
+    background: white;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #28a8d4;
+    box-shadow: 0 0 0 4px rgba(37, 169, 212, 0.12);
+}
+
+.reference {
+    margin: 10px 0 6px;
+    padding: 8px;
+    border-radius: 9px;
+    background: var(--tint);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+.hint {
+    margin: 0;
+    color: #5d7598;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.predict-button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 17px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(100deg, #0ba8b7, #277ee8, #9a69f2);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.predict-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(66, 142, 229, 0.3);
+}
+
+.result {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    margin-top: 20px;
+    padding: 22px;
+    border: 1px solid #9ce8d1;
+    border-left: 6px solid #18b7c9;
+    border-radius: 16px;
+    background: linear-gradient(110deg, #eafaff, #e9fff4);
+}
+
+.result-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #1eb6ce, #36bd89);
+    color: white;
+    font-size: 23px;
+}
+
+.result h2 {
+    margin: 0 0 8px;
+    color: #123c80;
+}
+
+.result p {
+    margin: 0;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.result-note {
+    margin-top: 8px !important;
+    color: #557996;
+    font-size: 13px;
+}
+
+.disclaimer {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #ffe0a0;
+    border-left: 5px solid #ffbd42;
+    border-radius: 13px;
+    background: #fff8e9;
+    color: #79541f;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+footer {
+    padding: 20px 10px;
+    color: #7a91ae;
+    text-align: center;
+    font-size: 13px;
+}
+
+@media (max-width: 1100px) {
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-note {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .hero {
+        padding: 15px 5px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .panel {
+        padding: 14px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="hero">
+    <div>
+        <h1>💙 Diabetes Onset Prediction</h1>
+        <p class="subtitle">
+            Enter the health measurements to obtain a prediction
+            from the trained Support Vector Machine (SVM) model.
+        </p>
+    </div>
+
+    <div class="hero-note">
+        ✨ Your Health Matters
+        <br>
+        <span>Small steps today for a healthier tomorrow.</span>
+    </div>
+</header>
+
+<main class="panel">
+
+<h2 class="section-title">✚ Patient Health Information</h2>
+<p>♡ Fill in the details below. All fields are required.</p>
+
+<form action="/predict" method="POST">
+
+<div class="form-grid">
+
+<div class="field-card">
+<label for="Pregnancies"><span class="symbol">♡</span>Pregnancies</label>
+<input id="Pregnancies" name="Pregnancies" type="number" min="0" step="1" placeholder="Enter number of pregnancies" required>
+<p class="reference">Reference: 0 or more</p>
+<p class="hint">Enter the number of previous pregnancies. Zero is a valid value; there is no normal range.</p>
+</div>
+
+<div class="field-card">
+<label for="Glucose"><span class="symbol">♦</span>Glucose (mg/dL)</label>
+<input id="Glucose" name="Glucose" type="number" min="0" step="any" placeholder="Enter glucose level" required>
+<p class="reference">Fasting reference: 70–99 mg/dL</p>
+<p class="hint">This reference applies to fasting blood glucose in non-pregnant adults. Test conditions matter.</p>
+</div>
+
+<div class="field-card">
+<label for="BloodPressure"><span class="symbol">♡</span>Blood Pressure (mmHg)</label>
+<input id="BloodPressure" name="BloodPressure" type="number" min="0" step="any" placeholder="Enter blood pressure" required>
+<p class="reference">Typical adult reference: below 120/80 mmHg</p>
+<p class="hint">The dataset records diastolic pressure as one number. A complete reading includes systolic and diastolic values, so this is not a direct comparison.</p>
+</div>
+
+<div class="field-card">
+<label for="SkinThickness"><span class="symbol">≋</span>Skin Thickness (mm)</label>
+<input id="SkinThickness" name="SkinThickness" type="number" min="0" step="any" placeholder="Enter skin thickness" required>
+<p class="reference">No universal reference range</p>
+<p class="hint">A skinfold measurement. Interpretation depends on measurement method and individual characteristics.</p>
+</div>
+
+<div class="field-card">
+<label for="Insulin"><span class="symbol">✚</span>Insulin (µU/mL)</label>
+<input id="Insulin" name="Insulin" type="number" min="0" step="any" placeholder="Enter insulin level" required>
+<p class="reference">Reference depends on the laboratory</p>
+<p class="hint">Insulin values depend on fasting status and the laboratory test. No single range suits every situation.</p>
+</div>
+
+<div class="field-card">
+<label for="BMI"><span class="symbol">▣</span>BMI (kg/m²)</label>
+<input id="BMI" name="BMI" type="number" min="0" step="any" placeholder="Enter BMI" required>
+<p class="reference">Adult healthy-weight category: 18.5–24.9</p>
+<p class="hint">BMI is calculated from weight and height. Adult categories may not apply to children or every individual.</p>
+</div>
+
+<div class="field-card">
+<label for="DiabetesPedigreeFunction"><span class="symbol">⌘</span>Diabetes Pedigree Function</label>
+<input id="DiabetesPedigreeFunction" name="DiabetesPedigreeFunction" type="number" min="0" step="any" placeholder="Enter DPF value" required>
+<p class="reference">Dataset-specific score</p>
+<p class="hint">A score associated with diabetes heredity in the dataset. It has no standard clinical reference range.</p>
+</div>
+
+<div class="field-card">
+<label for="Age"><span class="symbol">▦</span>Age (years)</label>
+<input id="Age" name="Age" type="number" min="1" step="1" placeholder="Enter age" required>
+<p class="reference">Reference: age in completed years</p>
+<p class="hint">Enter the person's age. Age has no normal or abnormal range for this form.</p>
+</div>
+
+</div>
+
+<button class="predict-button" type="submit">
+    ✨ Predict Diabetes Outcome
+</button>
+</form>
+
+{% if result %}
+<section class="result" aria-live="polite">
+    <div class="result-icon">✓</div>
+    <div>
+        <h2>Prediction Result</h2>
+        <p>{{ result }}</p>
+        <p class="result-note">
+            Remember: this is a machine-learning model output,
+            not a medical diagnosis.
+        </p>
+    </div>
+</section>
+{% endif %}
+
+<div class="disclaimer">
+<strong>Important:</strong> These reference values are general
+educational guidance, not diagnostic criteria. A value within a
+reference range does not guarantee a negative model prediction,
+and a value outside it does not establish diabetes. This SVM
+project is for educational screening only and is not a medical
+diagnosis. Consult a qualified healthcare professional for
+medical interpretation.
+</div>
+
+</main>
+
+<footer>
+Made for learning and awareness · Better data, brighter health 💙
+</footer>
+
+</div>
+</body>
+</html>
+
